@@ -381,7 +381,7 @@ nodes = []
 
 def branchesToLines(n):
     ends = []
-    distance = random.randint(1,10) * 10
+    distance = random.randint(1,10) * 15
     if 'n' in n.branches:
         ends.append((n.pos[0], n.pos[1] - distance))
     if 'e' in n.branches:
