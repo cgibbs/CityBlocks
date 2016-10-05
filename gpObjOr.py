@@ -112,7 +112,8 @@ def draw_all_nodes():
             draw_node(j*TILE_SIZE, k*TILE_SIZE, GREY)
 
 def draw_node(x,y,color):
-    pygame.draw.rect(screen, color, [x-2, y-2, 5, 5])
+    # pygame.draw.rect(screen, color, [x-2, y-2, 5, 5])
+    pass
 
 def draw_bot_text():
     mode_text = text16.render(" Mode = {0}".format(mode.capitalize()), True,
@@ -390,18 +391,36 @@ def branchesToLines(n):
         ends.append((n.pos[0], n.pos[1] + distance))
     if 'w' in n.branches:
         ends.append((n.pos[0] - distance, n.pos[1]))
-    # if 'ne' in n.branches:
-    #     ends.append((n.pos[0] + distance, n.pos[1] - distance))
-    # if 'se' in n.branches:
-    #     ends.append((n.pos[0] + distance, n.pos[1] + distance))
-    # if 'sw' in n.branches:
-    #     ends.append((n.pos[0] - distance, n.pos[1] + distance))
-    # if 'nw' in n.branches:
-    #     ends.append((n.pos[0] - distance, n.pos[1] - distance))
 
     for end in ends:
         new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'])
-        # new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w', 'ne', 'se', 'sw', 'nw'])
+        objects.append(Line(BLACK, n.pos, end, 3))
+        objects.append(new_node)
+        frontier.append(new_node)
+
+def branchesToLines45(n):
+    ends = []
+    distance = random.randint(1,10) * 15
+    if 'n' in n.branches:
+        ends.append((n.pos[0], n.pos[1] - distance))
+    if 'e' in n.branches:
+        ends.append((n.pos[0] + distance, n.pos[1]))
+    if 's' in n.branches:
+        ends.append((n.pos[0], n.pos[1] + distance))
+    if 'w' in n.branches:
+        ends.append((n.pos[0] - distance, n.pos[1]))
+    if 'ne' in n.branches:
+        ends.append((n.pos[0] + distance, n.pos[1] - distance))
+    if 'se' in n.branches:
+        ends.append((n.pos[0] + distance, n.pos[1] + distance))
+    if 'sw' in n.branches:
+        ends.append((n.pos[0] - distance, n.pos[1] + distance))
+    if 'nw' in n.branches:
+        ends.append((n.pos[0] - distance, n.pos[1] - distance))
+
+    for end in ends:
+        # new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'])
+        new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'] * 10 + ['ne', 'se', 'sw', 'nw'])
         objects.append(Line(BLACK, n.pos, end, 3))
         objects.append(new_node)
         frontier.append(new_node)
@@ -427,6 +446,9 @@ def gen(steps):
             n = frontier.pop()
         pick_branches(n)
         branchesToLines(n)
+
+    if len(frontier) == 0:
+        gen(steps)
 
     for i in frontier:
         objects.append(i)
