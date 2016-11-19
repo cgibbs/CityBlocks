@@ -419,8 +419,7 @@ def branchesToLines45(n):
         ends.append((n.pos[0] - distance, n.pos[1] - distance))
 
     for end in ends:
-        # new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'])
-        new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'] * 10 + ['ne', 'se', 'sw', 'nw'])
+        new_node = GenNode(BLACK, end, ['n', 's', 'e', 'w'] * 30 + ['ne', 'se', 'sw', 'nw'])
         objects.append(Line(BLACK, n.pos, end, 3))
         objects.append(new_node)
         frontier.append(new_node)
@@ -431,7 +430,7 @@ def pick_branches(n):
     for i in range(0,3):
         n.branches.append(random.choice(n.exits))
 
-def gen(steps):
+def generate(steps):
     n = GenNode(BLACK, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), ['n', 's', 'e', 'w'])
    # n = GenNode(BLACK, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), ['n', 's', 'e', 'w', 'ne', 'se', 'sw', 'nw'])
     frontier.append(n)
@@ -446,12 +445,18 @@ def gen(steps):
             n = frontier.pop()
         pick_branches(n)
         branchesToLines(n)
+        #branchesToLines45(n)
 
     if len(frontier) == 0:
-        gen(steps)
+        generate(steps)
 
     for i in frontier:
         objects.append(i)
+
+def gen():
+    global objects
+    objects = []
+    generate(250 * 4)
 
 #
 #
@@ -467,7 +472,7 @@ def main():
 
     pygame.display.flip()
 
-    gen(2500)
+    gen()
 
     running = True
     while running:
@@ -502,6 +507,9 @@ def main():
 
             elif event.key == pygame.K_END:
                 load()
+
+            elif event.key == pygame.K_SPACE:
+                gen()
 
         elif event.type == pygame.MOUSEBUTTONUP:
             mode_to_method[mode]()
